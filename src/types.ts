@@ -11,6 +11,7 @@ export interface RemoteRepository extends Repository {
 
 export interface StoreModel {
   repositories: Repository[]
+  currentRepository: Repository | null
   remoteRepositories: Computed<StoreModel, RemoteRepository[]>
   localRepositories: Computed<StoreModel, Repository[]>
 }

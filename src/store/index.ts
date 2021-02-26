@@ -9,6 +9,7 @@ export const useStoreState = typedHooks.useStoreState
 
 export default createStore<StoreModel>({
   repositories: [],
+  currentRepository: null,
   remoteRepositories: computed(state => state.repositories.filter(repo => 'url' in repo) as RemoteRepository[]),
   localRepositories: computed(state => state.repositories.filter(repo => !('url' in repo))),
 })
