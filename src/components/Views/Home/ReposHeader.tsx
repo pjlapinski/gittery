@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 export default function ReposHeader() {
   return (
@@ -7,5 +7,5 @@ export default function ReposHeader() {
       <button className='btn btn-lg btn-outline-light mx-2'>Find a local repository</button>
       <button className='btn btn-lg btn-outline-light mx-2'>Clone a repository</button>
     </header>
-  )
+  );
 }

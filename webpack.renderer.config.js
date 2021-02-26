@@ -1,4 +1,4 @@
-const path = require('path')
+const path = require('path');
 
 module.exports = {
   // Put your normal webpack config below here
@@ -13,4 +13,4 @@ module.exports = {
   module: {
     rules: require('./webpack.rules'),
   },
-}
+};

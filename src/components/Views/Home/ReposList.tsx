@@ -1,9 +1,9 @@
-import { useStoreState } from '@/store'
-import React from 'react'
-import { Link } from 'react-router-dom'
+import { useStoreState } from '@/store';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function ReposList() {
-  const repos = useStoreState(state => state.repositories)
+  const repos = useStoreState(state => state.repositories);
 
   return (
     <div className='overflow-auto'>
@@ -19,5 +19,5 @@ export default function ReposList() {
         ))}
       </div>
     </div>
-  )
+  );
 }
