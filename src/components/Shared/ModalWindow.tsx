@@ -9,16 +9,9 @@ interface ModalProps {
 
 export default function ModalWindow({ id, ariaLabelledby, children, className }: ModalProps) {
   return (
-    <div
-      className={`modal ${className}`}
-      id={id}
-      tabIndex={-1}
-      role='dialog'
-      aria-labelledby={ariaLabelledby}
-      aria-hidden='true'
-    >
-      <div className='modal-dialog' role='document'>
-        <div className='modal-content'>{children}</div>
+    <div id={id} className='modal' tabIndex={-1} role='dialog' aria-labelledby={ariaLabelledby} aria-hidden='true'>
+      <div className='modal-dialog modal-dialog-centered' role='document'>
+        <div className={`modal-content bg-dark border border-white ${className}`}>{children}</div>
       </div>
     </div>
   );

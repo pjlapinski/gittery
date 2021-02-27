@@ -17,8 +17,8 @@ export default createStore<StoreModel>(
         if (state.repositories.some(r => _.isEqual(r, repo))) return;
         state.repositories.push(repo);
       }),
-      removeRepository: action((state, name) => {
-        state.repositories = state.repositories.filter(repo => repo.name !== name);
+      removeRepository: action((state, repo) => {
+        state.repositories = state.repositories.filter(r => !_.isEqual(r, repo));
       }),
     },
     { storage: 'localStorage' }
