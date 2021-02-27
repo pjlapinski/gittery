@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter, HashRouter as Router, Route } from 'react-router-dom';
+import { HashRouter, Route } from 'react-router-dom';
 import { StoreProvider } from 'easy-peasy';
 import { hot } from 'react-hot-loader/root';
 import store from '../store';
