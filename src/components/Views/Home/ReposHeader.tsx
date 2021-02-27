@@ -12,7 +12,7 @@ export default function ReposHeader() {
     if (pathToRepo === undefined) return;
     if (fs.existsSync(`${pathToRepo}${path.sep}.git${path.sep}`))
       addRepo({ name: path.basename(pathToRepo), localPath: pathToRepo });
-    else remote.dialog.showMessageBoxSync({ type: 'error', message: 'The chosen directory is not a git repository' });
+    else remote.dialog.showMessageBoxSync({ type: 'error', message: 'The chosen directory is not a git repository.' });
   }
 
   return (
