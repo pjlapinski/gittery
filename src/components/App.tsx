@@ -5,6 +5,12 @@ import { hot } from 'react-hot-loader/root';
 import store from '../store';
 import HomeView from './Views/Home/HomeView';
 import About from './Views/About/About';
+import { ipcRenderer } from 'electron';
+
+ipcRenderer.on('clear-local-storage', () => {
+  localStorage.clear();
+  ipcRenderer.send('request-reload');
+});
 
 function App() {
   return (
