@@ -6,8 +6,8 @@ import fs from 'fs';
 import RepoRemoveModal from './RepoRemoveModal';
 import { Modal } from 'bootstrap';
 
-const maxNameChars = 15;
-const maxPathChars = 30;
+const maxNameChars = 40;
+const maxPathChars = 70;
 
 export default function ReposList() {
   const repos = useStoreState(state => state.repositories);
@@ -41,20 +41,22 @@ export default function ReposList() {
               <div className='d-flex btn-group'>
                 <Link
                   to='#'
-                  className='d-flex justify-content-between btn btn-block btn-outline-light border-0'
+                  className='text-left btn btn-block btn-outline-light border-0'
                   onClick={() => console.log(repo)}
                 >
-                  <h4 className='align-self-center'>
-                    {repo.name.length >= maxNameChars ? repo.name.slice(0, maxNameChars) + '...' : repo.name}
-                  </h4>
-                  <h6 className='text-secondary align-self-end'>
+                  <h3>{repo.name.length >= maxNameChars ? repo.name.slice(0, maxNameChars) + '...' : repo.name}</h3>
+                  <h6 className='text-muted'>
                     {repo.localPath.length >= maxPathChars
                       ? repo.localPath.slice(0, maxPathChars) + '...'
                       : repo.localPath}
                   </h6>
                 </Link>
-                <button className='btn btn-danger p-3' onClick={() => openRemoveModal(repo)}>
-                  X
+                <button
+                  className='btn btn-sm btn-danger p-3'
+                  style={{ fontSize: '2rem' }}
+                  onClick={() => openRemoveModal(repo)}
+                >
+                  &times;
                 </button>
               </div>
               <hr className='border-white m-0' />
