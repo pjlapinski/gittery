@@ -1,6 +1,6 @@
 import React from 'react';
-import ReposHeader from './ReposHeader';
-import ReposList from './ReposList';
+import ReposHeader from './components/ReposHeader';
+import ReposList from './components/ReposList';
 
 export default function HomeView() {
   return (
