@@ -1,17 +1,12 @@
-import { Computed } from 'easy-peasy';
+import { Action } from 'easy-peasy';
 
 export interface Repository {
   name: string;
   localPath: string;
 }
 
-export interface RemoteRepository extends Repository {
-  url: string;
-}
-
 export interface StoreModel {
   repositories: Repository[];
   currentRepository: Repository | null;
-  remoteRepositories: Computed<StoreModel, RemoteRepository[]>;
-  localRepositories: Computed<StoreModel, Repository[]>;
+  addRepository: Action<StoreModel, Repository>;
 }

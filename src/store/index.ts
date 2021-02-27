@@ -1,5 +1,5 @@
-import { StoreModel, RemoteRepository } from '@/types';
-import { computed, createStore, createTypedHooks, persist } from 'easy-peasy';
+import { StoreModel } from '@/types';
+import { action, createStore, createTypedHooks, persist } from 'easy-peasy';
 
 const typedHooks = createTypedHooks<StoreModel>();
 
@@ -10,14 +10,11 @@ export const useStoreState = typedHooks.useStoreState;
 export default createStore<StoreModel>(
   persist(
     {
-      repositories: [
-        { name: 'repo1', localPath: 'C:\\repos\\repo1\\' },
-        { name: 'repo2', localPath: 'C:\\repos\\repo2\\' },
-        { name: 'repo3', localPath: 'C:\\repos\\repo3\\' },
-      ],
+      repositories: [],
       currentRepository: null,
-      remoteRepositories: computed(state => state.repositories.filter(repo => 'url' in repo) as RemoteRepository[]),
-      localRepositories: computed(state => state.repositories.filter(repo => !('url' in repo))),
+      addRepository: action((state, repo) => {
+        state.repositories.push(repo);
+      }),
     },
     { storage: 'localStorage' }
   )
