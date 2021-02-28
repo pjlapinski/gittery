@@ -16,6 +16,7 @@ const forbiddenFileNameCharacters = '<>:"/\\|?*';
 export default function RepoInitModal({ id, onInit }: RepoInitModalProps) {
   const [repoName, setRepoName] = useState('');
   const [repoPath, setRepoPath] = useState('');
+  const [repoDescription, setRepoDescription] = useState('');
   const [nameError, setNameError] = useState('');
   const [pathError, setPathError] = useState('');
 
@@ -24,6 +25,7 @@ export default function RepoInitModal({ id, onInit }: RepoInitModalProps) {
   function resetState() {
     setRepoName('');
     setRepoPath('');
+    setRepoDescription('');
     setNameError('');
     setPathError('');
   }
@@ -34,13 +36,13 @@ export default function RepoInitModal({ id, onInit }: RepoInitModalProps) {
     setRepoPath(pathToRepo);
   }
 
-  function onInitialize() {
+  async function onInitialize() {
     let nameErr = '';
     let pathErr = '';
     if (repoName === '') nameErr = 'Name cannot be empty';
     if (repoPath === '') pathErr = 'Path cannot be empty';
     if (repoName.split('').some(ch => forbiddenFileNameCharacters.indexOf(ch) !== -1))
-      nameErr = 'The name cannot contain any of those charactes: < > : " / \\ | ? *';
+      nameErr = 'The name cannot contain any of those characters: < > : " / \\ | ? *';
     if (repoName.endsWith(' ') || repoName.endsWith('.')) nameErr = 'The name cannot end in a space or dot';
     const fullPath = repoPath + path.sep + repoName;
     if (!fs.existsSync(repoPath)) pathErr = 'The path must be an existing directory';
@@ -49,10 +51,12 @@ export default function RepoInitModal({ id, onInit }: RepoInitModalProps) {
     setNameError(nameErr);
     setPathError(pathErr);
     if (nameErr !== '' || pathErr !== '') return;
-    git.init([fullPath]);
+    await git.init([fullPath]);
     addRepo({ name: repoName, localPath: fullPath });
+    if (repoDescription !== '') fs.writeFileSync(`${fullPath}${path.sep}.git${path.sep}description`, repoDescription);
     setRepoName('');
     setRepoPath('');
+    setRepoDescription('');
     onInit();
   }
 
@@ -75,6 +79,13 @@ export default function RepoInitModal({ id, onInit }: RepoInitModalProps) {
             placeholder='Name'
             value={repoName}
             onChange={e => setRepoName(e.target.value)}
+          />
+          <input
+            type='text'
+            className='form-control bg-darker text-white mb-3'
+            placeholder='Description'
+            value={repoDescription}
+            onChange={e => setRepoDescription(e.target.value)}
           />
           <span className='text-danger'>{pathError}</span>
           <div className='input-group'>
