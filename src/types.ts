@@ -11,3 +11,9 @@ export interface StoreModel {
   addRepository: Action<StoreModel, Repository>;
   removeRepository: Action<StoreModel, Repository>;
 }
+
+export interface Licenses {
+  [key: string]: string;
+}
+
+export interface Ignores extends Licenses {}
