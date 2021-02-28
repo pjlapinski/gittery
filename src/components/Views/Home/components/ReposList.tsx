@@ -1,6 +1,6 @@
 import { useStoreActions, useStoreState } from '@/store';
 import { Repository } from '@/types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import fs from 'fs';
 import RepoRemoveModal from './RepoRemoveModal';
@@ -14,6 +14,7 @@ export default function ReposList() {
   const removeRepository = useStoreActions(state => state.removeRepository);
 
   const [repoToDelete, setRepoToDelete] = useState<Repository | null>(null);
+  const [removeRepoModal, setRemoveRepoModal] = useState<Modal | null>(null);
 
   function onDeleteLocal(repo: Repository) {
     removeRepository(repo);
@@ -22,9 +23,10 @@ export default function ReposList() {
 
   function openRemoveModal(repo: Repository) {
     setRepoToDelete(repo);
-    const modal = new Modal(document.getElementById('remove-repo') as HTMLElement);
-    modal.show();
+    removeRepoModal?.show();
   }
+
+  useEffect(() => setRemoveRepoModal(new Modal(document.getElementById('remove-repo') as HTMLElement)), []);
 
   return (
     <>
