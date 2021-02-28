@@ -25,3 +25,7 @@ body {
 .overflow-auto {
   overflow: auto;
 }
+
+.bg-darker {
+  background-color: #272a2c !important;
+}
