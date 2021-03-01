@@ -15,5 +15,3 @@ export interface StoreModel {
 export interface Licenses {
   [key: string]: string;
 }
-
-export interface Ignores extends Licenses {}
