@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { remote } from 'electron';
 import path from 'path';
 import fs from 'fs';
+import axios from 'axios';
 import ModalWindow from '@/components/Shared/ModalWindow';
 import { git } from '@components/App';
 import { useStoreActions } from '@/store';
+import licenses from '@/git/licenses';
+import ignores from '@/git/ignores';
 
 interface RepoInitModalProps {
   id: string;
@@ -19,6 +22,8 @@ export default function RepoInitModal({ id, onInit }: RepoInitModalProps) {
   const [repoDescription, setRepoDescription] = useState('');
   const [nameError, setNameError] = useState('');
   const [pathError, setPathError] = useState('');
+  const [selectedIgnore, setSelectedIgnore] = useState('');
+  const [selectedLicense, setSelectedLicense] = useState('');
 
   const addRepo = useStoreActions(store => store.addRepository);
 
@@ -28,6 +33,8 @@ export default function RepoInitModal({ id, onInit }: RepoInitModalProps) {
     setRepoDescription('');
     setNameError('');
     setPathError('');
+    setSelectedIgnore('');
+    setSelectedLicense('');
   }
 
   function onChoosePathButtonClick() {
@@ -37,6 +44,7 @@ export default function RepoInitModal({ id, onInit }: RepoInitModalProps) {
   }
 
   async function onInitialize() {
+    // validate inputs
     let nameErr = '';
     let pathErr = '';
     if (repoName === '') nameErr = 'Name cannot be empty';
@@ -51,12 +59,40 @@ export default function RepoInitModal({ id, onInit }: RepoInitModalProps) {
     setNameError(nameErr);
     setPathError(pathErr);
     if (nameErr !== '' || pathErr !== '') return;
+    // create the repository
     await git.init([fullPath]);
     addRepo({ name: repoName, localPath: fullPath });
+    // if description exists, write it to .git/description
     if (repoDescription !== '') fs.writeFileSync(`${fullPath}${path.sep}.git${path.sep}description`, repoDescription);
-    setRepoName('');
-    setRepoPath('');
-    setRepoDescription('');
+    // if gitignore was selected, create it
+    if (selectedIgnore !== '') {
+      const res = await axios.get(`https://api.github.com/gitignore/templates/${selectedIgnore}`);
+      if (res.status === 200) {
+        fs.writeFileSync(`${fullPath}${path.sep}.gitignore`, res.data['source']);
+      }
+    }
+    // if a license was selected, create it
+    if (selectedLicense !== '') {
+      const res = await axios.get(`https://api.github.com/licenses/${selectedLicense}`);
+      if (res.status === 200) {
+        const currentYear = new Date().getFullYear().toString();
+        const userName = await git
+          .listConfig()
+          .then(r => r.all['user.name'])
+          .then(r => (typeof r === 'string' ? r : r[0]));
+        const userEmail = await git
+          .listConfig()
+          .then(r => r.all['user.email'])
+          .then(r => (typeof r === 'string' ? r : r[0]));
+        const data = (res.data['body'] as string)
+          .replaceAll(/\[year\]/g, currentYear)
+          .replaceAll(/\[project\]/g, repoName)
+          .replaceAll(/\[fullname\]/g, userName)
+          .replaceAll(/\[email\]/g, userEmail);
+        fs.writeFileSync(`${fullPath}${path.sep}LICENSE`, data);
+      }
+    }
+    resetState();
     onInit();
   }
 
@@ -102,6 +138,32 @@ export default function RepoInitModal({ id, onInit }: RepoInitModalProps) {
               </button>
             </div>
           </div>
+          <h5 className='mt-3'>.gitignore</h5>
+          <select
+            value={selectedIgnore}
+            onChange={e => setSelectedIgnore(e.target.value)}
+            className='custom-select bg-darker text-white border-white select-white-handle'
+          >
+            <option value=''>None</option>
+            {ignores.map(ignore => (
+              <option key={ignore} value={ignore}>
+                {ignore}
+              </option>
+            ))}
+          </select>
+          <h5 className='mt-3'>License</h5>
+          <select
+            value={selectedLicense}
+            onChange={e => setSelectedLicense(e.target.value)}
+            className='custom-select bg-darker text-white border-white select-white-handle'
+          >
+            <option value=''>None</option>
+            {Object.keys(licenses).map(license => (
+              <option key={license} value={licenses[license]}>
+                {license}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
       <div className='modal-footer'>
