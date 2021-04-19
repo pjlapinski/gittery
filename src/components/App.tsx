@@ -4,8 +4,8 @@ import { StoreProvider } from 'easy-peasy';
 import simpleGit from 'simple-git';
 import { hot } from 'react-hot-loader/root';
 import store from '../store';
-import HomeView from './Views/Home/HomeView';
-import About from './Views/About/About';
+import HomeView from './views/home/HomeView';
+import About from './views/about/About';
 import { ipcRenderer } from 'electron';
 
 export const git = simpleGit();

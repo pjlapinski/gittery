@@ -3,7 +3,7 @@ import { remote } from 'electron';
 import path from 'path';
 import fs from 'fs';
 import axios from 'axios';
-import ModalWindow from '@/components/Shared/ModalWindow';
+import ModalWindow from '@components/shared/ModalWindow';
 import { git } from '@components/App';
 import { useStoreActions } from '@/store';
 import licenses from '@/git/licenses';

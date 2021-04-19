@@ -1,5 +1,5 @@
 import React from 'react';
-import ModalWindow from '@/components/Shared/ModalWindow';
+import ModalWindow from '@components/shared/ModalWindow';
 import { Repository } from '@/types';
 
 interface RepoRemoveModalProps {
