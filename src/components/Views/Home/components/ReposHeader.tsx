@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import fs from 'fs';
 import path from 'path';
 import { useStoreActions } from '@/store';
-import ErrorModal from '@components/Shared/ErrorModal';
+import ErrorModal from '@components/shared/ErrorModal';
 import RepoInitModal from './RepoInitModal';
 
 const ReposHeader = () => {
