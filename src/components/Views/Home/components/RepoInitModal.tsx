@@ -16,7 +16,7 @@ interface RepoInitModalProps {
 
 const forbiddenFileNameCharacters = '<>:"/\\|?*';
 
-export default function RepoInitModal({ id, onInit }: RepoInitModalProps) {
+const RepoInitModal = ({ id, onInit }: RepoInitModalProps) => {
   const [repoName, setRepoName] = useState('');
   const [repoPath, setRepoPath] = useState('');
   const [repoDescription, setRepoDescription] = useState('');
@@ -27,7 +27,7 @@ export default function RepoInitModal({ id, onInit }: RepoInitModalProps) {
 
   const addRepo = useStoreActions(store => store.addRepository);
 
-  function resetState() {
+  const resetState = () => {
     setRepoName('');
     setRepoPath('');
     setRepoDescription('');
@@ -35,15 +35,15 @@ export default function RepoInitModal({ id, onInit }: RepoInitModalProps) {
     setPathError('');
     setSelectedIgnore('');
     setSelectedLicense('');
-  }
+  };
 
-  function onChoosePathButtonClick() {
+  const onChoosePathButtonClick = () => {
     const pathToRepo = remote.dialog.showOpenDialogSync({ properties: ['openDirectory'] })?.[0];
     if (pathToRepo === undefined) return;
     setRepoPath(pathToRepo);
-  }
+  };
 
-  async function onInitialize() {
+  const onInitialize = async () => {
     // validate inputs
     let nameErr = '';
     let pathErr = '';
@@ -94,7 +94,7 @@ export default function RepoInitModal({ id, onInit }: RepoInitModalProps) {
     }
     resetState();
     onInit();
-  }
+  };
 
   return (
     <ModalWindow id={id} ariaLabelledby={`${id}--label`}>
@@ -176,4 +176,6 @@ export default function RepoInitModal({ id, onInit }: RepoInitModalProps) {
       </div>
     </ModalWindow>
   );
-}
+};
+
+export default RepoInitModal;

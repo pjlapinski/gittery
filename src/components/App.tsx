@@ -15,7 +15,7 @@ ipcRenderer.on('clear-local-storage', () => {
   ipcRenderer.send('request-reload');
 });
 
-function App() {
+const App = () => {
   return (
     <StoreProvider store={store}>
       <div className='bg-dark text-white vh-100' style={{ overflow: 'hidden' }}>
@@ -26,6 +26,6 @@ function App() {
       </div>
     </StoreProvider>
   );
-}
+};
 
 export default hot(App);

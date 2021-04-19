@@ -9,7 +9,7 @@ interface RepoRemoveModalProps {
   onDeleteLocal: Function;
 }
 
-export default function RepoRemoveModal({ id, repository, onConfirm, onDeleteLocal }: RepoRemoveModalProps) {
+const RepoRemoveModal = ({ id, repository, onConfirm, onDeleteLocal }: RepoRemoveModalProps) => {
   return (
     <ModalWindow id={id} ariaLabelledby={`${id}--label`}>
       <div className='modal-header'>
@@ -36,4 +36,6 @@ export default function RepoRemoveModal({ id, repository, onConfirm, onDeleteLoc
       </div>
     </ModalWindow>
   );
-}
+};
+
+export default RepoRemoveModal;

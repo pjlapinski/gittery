@@ -6,7 +6,7 @@ interface ErrorModalProps {
   message: string;
 }
 
-export default function ErrorModal({ id, message }: ErrorModalProps) {
+const ErrorModal = ({ id, message }: ErrorModalProps) => {
   return (
     <ModalWindow ariaLabelledby={`${id}--label`} id={id}>
       <div className='modal-header'>
@@ -22,4 +22,6 @@ export default function ErrorModal({ id, message }: ErrorModalProps) {
       </div>
     </ModalWindow>
   );
-}
+};
+
+export default ErrorModal;

@@ -9,22 +9,22 @@ import { Modal } from 'bootstrap';
 const maxNameChars = 40;
 const maxPathChars = 70;
 
-export default function ReposList() {
+const ReposList = () => {
   const repos = useStoreState(state => state.repositories);
   const removeRepository = useStoreActions(state => state.removeRepository);
 
   const [repoToDelete, setRepoToDelete] = useState<Repository | null>(null);
   const [removeRepoModal, setRemoveRepoModal] = useState<Modal | null>(null);
 
-  function onDeleteLocal(repo: Repository) {
+  const onDeleteLocal = (repo: Repository) => {
     removeRepository(repo);
     fs.rmdirSync(repo.localPath, { recursive: true });
-  }
+  };
 
-  function openRemoveModal(repo: Repository) {
+  const openRemoveModal = (repo: Repository) => {
     setRepoToDelete(repo);
     removeRepoModal?.show();
-  }
+  };
 
   useEffect(() => setRemoveRepoModal(new Modal(document.getElementById('remove-repo') as HTMLElement)), []);
 
@@ -68,4 +68,6 @@ export default function ReposList() {
       </div>
     </>
   );
-}
+};
+
+export default ReposList;

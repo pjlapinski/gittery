@@ -6,20 +6,19 @@ import path from 'path';
 import { useStoreActions } from '@/store';
 import ErrorModal from '@components/Shared/ErrorModal';
 import RepoInitModal from './RepoInitModal';
-import { git } from '@components/App';
 
-export default function ReposHeader() {
+const ReposHeader = () => {
   const addRepo = useStoreActions(store => store.addRepository);
   const [initRepoModal, setInitRepoModal] = useState<Modal | null>(null);
 
-  function findLocalRepo() {
+  const findLocalRepo = () => {
     const pathToRepo = remote.dialog.showOpenDialogSync({ properties: ['openDirectory'] })?.[0];
     if (pathToRepo === undefined) return;
     // check if the directory contains a .git subdirectory
     if (fs.existsSync(`${pathToRepo}${path.sep}.git${path.sep}`))
       addRepo({ name: path.basename(pathToRepo), localPath: pathToRepo });
     else initRepoModal?.show();
-  }
+  };
 
   useEffect(() => setInitRepoModal(new Modal(document.getElementById('init-repository') as HTMLElement)), []);
 
@@ -38,4 +37,6 @@ export default function ReposHeader() {
       </header>
     </>
   );
-}
+};
+
+export default ReposHeader;
