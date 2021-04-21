@@ -10,6 +10,7 @@ import RepoInitModal from './RepoInitModal';
 const ReposHeader = () => {
   const addRepo = useStoreActions(store => store.addRepository);
   const [initRepoModal, setInitRepoModal] = useState<Modal | null>(null);
+  const [notAGitRepoModal, setNotAGitRepoModal] = useState<Modal | null>(null);
 
   const findLocalRepo = () => {
     const pathToRepo = remote.dialog.showOpenDialogSync({ properties: ['openDirectory'] })?.[0];
@@ -17,10 +18,13 @@ const ReposHeader = () => {
     // check if the directory contains a .git subdirectory
     if (fs.existsSync(`${pathToRepo}${path.sep}.git${path.sep}`))
       addRepo({ name: path.basename(pathToRepo), localPath: pathToRepo });
-    else initRepoModal?.show();
+    else notAGitRepoModal?.show();
   };
 
-  useEffect(() => setInitRepoModal(new Modal(document.getElementById('init-repository') as HTMLElement)), []);
+  useEffect(() => {
+    setInitRepoModal(new Modal(document.getElementById('init-repository') as HTMLElement));
+    setNotAGitRepoModal(new Modal(document.getElementById('not-a-git-repository') as HTMLElement));
+  }, []);
 
   return (
     <>
