@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { remote } from 'electron';
 import path from 'path';
 import fs from 'fs';
@@ -27,7 +27,7 @@ const RepoInitModal = ({ id, onRepoInitialized }: RepoInitModalProps) => {
 
   const addRepo = useStoreActions(store => store.addRepository);
 
-  const resetState = () => {
+  const resetState = useCallback(() => {
     setRepoName('');
     setRepoPath('');
     setRepoDescription('');
@@ -35,16 +35,15 @@ const RepoInitModal = ({ id, onRepoInitialized }: RepoInitModalProps) => {
     setPathError('');
     setSelectedIgnore('');
     setSelectedLicense('');
-  };
+  }, [setRepoName, setRepoPath, setRepoDescription, setNameError, setPathError, setSelectedIgnore, setSelectedLicense]);
 
-  const onChoosePathButtonClick = () => {
+  const onChoosePathButtonClick = useCallback(() => {
     const pathToRepo = remote.dialog.showOpenDialogSync({ properties: ['openDirectory'] })?.[0];
     if (pathToRepo === undefined) return;
     setRepoPath(pathToRepo);
-  };
+  }, [setRepoPath]);
 
-  const validateInputs = () => {
-    // validate inputs
+  const validateInputs = useCallback(() => {
     let nameErr = '';
     let pathErr = '';
     if (repoName === '') nameErr = 'Name cannot be empty';
@@ -58,10 +57,10 @@ const RepoInitModal = ({ id, onRepoInitialized }: RepoInitModalProps) => {
       nameErr = 'The directory must not be an existing repository';
     setNameError(nameErr);
     setPathError(pathErr);
-    return nameErr !== '' || pathErr !== '';
-  };
+    return nameErr === '' && pathErr === '';
+  }, [repoName, repoPath, setNameError, setPathError]);
 
-  const onRepoInitializedialize = async () => {
+  const onModalSubmitted = useCallback(async () => {
     if (!validateInputs()) return;
     const fullPath = `${repoPath}${path.sep}${repoName}`;
     // create the repository
@@ -72,9 +71,7 @@ const RepoInitModal = ({ id, onRepoInitialized }: RepoInitModalProps) => {
     // if gitignore was selected, create it
     if (selectedIgnore !== '') {
       const res = await axios.get(`https://api.github.com/gitignore/templates/${selectedIgnore}`);
-      if (res.status === 200) {
-        fs.writeFileSync(`${fullPath}${path.sep}.gitignore`, res.data['source']);
-      }
+      if (res.status === 200) fs.writeFileSync(`${fullPath}${path.sep}.gitignore`, res.data['source']);
     }
     // if a license was selected, create it
     if (selectedLicense !== '') {
@@ -99,7 +96,7 @@ const RepoInitModal = ({ id, onRepoInitialized }: RepoInitModalProps) => {
     }
     resetState();
     onRepoInitialized();
-  };
+  }, [validateInputs, addRepo, repoDescription, selectedIgnore, selectedLicense, resetState, onRepoInitialized]);
 
   return (
     <ModalWindow id={id} ariaLabelledby={`${id}--label`}>
@@ -172,7 +169,7 @@ const RepoInitModal = ({ id, onRepoInitialized }: RepoInitModalProps) => {
         </div>
       </div>
       <div className='modal-footer'>
-        <button className='btn btn-secondary' onClick={onRepoInitializedialize}>
+        <button className='btn btn-secondary' onClick={onModalSubmitted}>
           Initialize
         </button>
         <button className='btn btn-secondary' data-dismiss='modal' onClick={resetState}>

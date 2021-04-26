@@ -19,7 +19,7 @@ const ReposHeader = () => {
     if (pathToRepo === undefined) return;
     if (isGitRepo(pathToRepo)) addRepo({ name: path.basename(pathToRepo), localPath: pathToRepo });
     else notAGitRepoModal?.show();
-  }, []);
+  }, [notAGitRepoModal, addRepo]);
 
   useEffect(() => {
     setInitRepoModal(new Modal(document.getElementById('init-repository') as HTMLElement));
