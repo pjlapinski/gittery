@@ -13,8 +13,8 @@ const ReposList = () => {
   const repos = useStoreState(state => state.repositories);
   const removeRepository = useStoreActions(state => state.removeRepository);
 
-  const [repoToDelete, setRepoToDelete] = useState<Repository | null>(null);
-  const [removeRepoModal, setRemoveRepoModal] = useState<Modal | null>(null);
+  const [repoToDelete, setRepoToDelete] = useState<Repository>();
+  const [removeRepoModal, setRemoveRepoModal] = useState<Modal>();
 
   const onDeleteLocal = (repo: Repository) => {
     removeRepository(repo);
@@ -23,10 +23,12 @@ const ReposList = () => {
 
   const openRemoveModal = (repo: Repository) => {
     setRepoToDelete(repo);
-    removeRepoModal?.show();
+    removeRepoModal!.show();
   };
 
-  useEffect(() => setRemoveRepoModal(new Modal(document.getElementById('remove-repo') as HTMLElement)), []);
+  useEffect(() => {
+    setRemoveRepoModal(new Modal(document.getElementById('remove-repo') as HTMLElement));
+  }, [setRemoveRepoModal]);
 
   return (
     <>

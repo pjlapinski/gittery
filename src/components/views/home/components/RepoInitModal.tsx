@@ -11,12 +11,12 @@ import ignores from '@/git/ignores';
 
 interface RepoInitModalProps {
   id: string;
-  onInit: Function;
+  onRepoInitialized: Function;
 }
 
 const forbiddenFileNameCharacters = '<>:"/\\|?*';
 
-const RepoInitModal = ({ id, onInit }: RepoInitModalProps) => {
+const RepoInitModal = ({ id, onRepoInitialized }: RepoInitModalProps) => {
   const [repoName, setRepoName] = useState('');
   const [repoPath, setRepoPath] = useState('');
   const [repoDescription, setRepoDescription] = useState('');
@@ -43,7 +43,7 @@ const RepoInitModal = ({ id, onInit }: RepoInitModalProps) => {
     setRepoPath(pathToRepo);
   };
 
-  const onInitialize = async () => {
+  const validateInputs = () => {
     // validate inputs
     let nameErr = '';
     let pathErr = '';
@@ -52,13 +52,18 @@ const RepoInitModal = ({ id, onInit }: RepoInitModalProps) => {
     if (repoName.split('').some(ch => forbiddenFileNameCharacters.indexOf(ch) !== -1))
       nameErr = 'The name cannot contain any of those characters: < > : " / \\ | ? *';
     if (repoName.endsWith(' ') || repoName.endsWith('.')) nameErr = 'The name cannot end in a space or dot';
-    const fullPath = repoPath + path.sep + repoName;
+    const fullPath = `${repoPath}${path.sep}${repoName}`;
     if (!fs.existsSync(repoPath)) pathErr = 'The path must be an existing directory';
     if (fs.existsSync(`${fullPath}${path.sep}.git${path.sep}`))
       nameErr = 'The directory must not be an existing repository';
     setNameError(nameErr);
     setPathError(pathErr);
-    if (nameErr !== '' || pathErr !== '') return;
+    return nameErr !== '' || pathErr !== '';
+  };
+
+  const onRepoInitializedialize = async () => {
+    if (!validateInputs()) return;
+    const fullPath = `${repoPath}${path.sep}${repoName}`;
     // create the repository
     await git.init([fullPath]);
     addRepo({ name: repoName, localPath: fullPath });
@@ -93,7 +98,7 @@ const RepoInitModal = ({ id, onInit }: RepoInitModalProps) => {
       }
     }
     resetState();
-    onInit();
+    onRepoInitialized();
   };
 
   return (
@@ -133,7 +138,7 @@ const RepoInitModal = ({ id, onInit }: RepoInitModalProps) => {
               onChange={e => setRepoPath(e.target.value)}
             />
             <div className='input-group-append'>
-              <button className='btn btn-secondary' onClick={() => onChoosePathButtonClick()}>
+              <button className='btn btn-secondary' onClick={onChoosePathButtonClick}>
                 Choose...
               </button>
             </div>
@@ -167,10 +172,10 @@ const RepoInitModal = ({ id, onInit }: RepoInitModalProps) => {
         </div>
       </div>
       <div className='modal-footer'>
-        <button className='btn btn-secondary' onClick={() => onInitialize()}>
+        <button className='btn btn-secondary' onClick={onRepoInitializedialize}>
           Initialize
         </button>
-        <button className='btn btn-secondary' data-dismiss='modal' onClick={() => resetState()}>
+        <button className='btn btn-secondary' data-dismiss='modal' onClick={resetState}>
           Close
         </button>
       </div>
